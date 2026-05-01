@@ -210,8 +210,8 @@ function _syncInstallGuards() {
 
     // Action phase — choosing action type (Strategy/Tactical/Pass)
     window.FctAction = function (el) {
-        var activePly = strategyList[gActivePlayer][STRATEGY_PLAYER];
-        if (!_syncCanAct(activePly)) {
+        var activePlayer = strategyList[gActivePlayer][STRATEGY_PLAYER];
+        if (!_syncCanAct(activePlayer)) {
             _syncShowNotYourTurn();
             return;
         }
@@ -220,8 +220,8 @@ function _syncInstallGuards() {
 
     // Action phase — "Next player" / resolve button
     window.fctResolveAction = function () {
-        var activePly = strategyList[gActivePlayer][STRATEGY_PLAYER];
-        if (!_syncCanAct(activePly)) {
+        var activePlayer = strategyList[gActivePlayer][STRATEGY_PLAYER];
+        if (!_syncCanAct(activePlayer)) {
             _syncShowNotYourTurn();
             return;
         }

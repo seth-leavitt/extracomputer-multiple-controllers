@@ -30,7 +30,8 @@ SOCKETIO_JS_PATH = os.path.join(BASE_DIR, "ti4", "socket.io.min.js")
 SOCKETIO_JS_URL = "https://cdn.socket.io/4.7.5/socket.io.min.js"
 
 app = Flask(__name__, static_folder=BASE_DIR)
-app.config["SECRET_KEY"] = "extracomputer-ti4-secret"
+# Generate a fresh random key each run so sessions can't be forged across restarts
+app.config["SECRET_KEY"] = os.urandom(24).hex()
 
 # threading mode works without extra async dependencies
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
