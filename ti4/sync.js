@@ -62,6 +62,18 @@ function syncInit() {
             if (gIsGameRunning) {
                 var btn = document.getElementById("idContinueButton");
                 if (btn) btn.disabled = false;
+                // Admin also needs to claim a faction
+                _syncShowPlayerSelectModal();
+            } else {
+                // Hook fctSaveGame so we can show the faction modal the first
+                // time the admin saves (= game start).  Restore the original
+                // afterwards so mid-game saves are not affected.
+                var _origFctSaveGame = window.fctSaveGame;
+                window.fctSaveGame = function () {
+                    _origFctSaveGame.apply(this, arguments);
+                    window.fctSaveGame = _origFctSaveGame;
+                    _syncShowPlayerSelectModal();
+                };
             }
         } else {
             // Install action guards for non-admin players
