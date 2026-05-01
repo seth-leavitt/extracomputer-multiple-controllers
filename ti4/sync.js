@@ -70,9 +70,12 @@ function syncInit() {
                 // afterwards so mid-game saves are not affected.
                 var _origFctSaveGame = window.fctSaveGame;
                 window.fctSaveGame = function () {
-                    _origFctSaveGame.apply(this, arguments);
-                    window.fctSaveGame = _origFctSaveGame;
-                    _syncShowPlayerSelectModal();
+                    try {
+                        _origFctSaveGame.apply(this, arguments);
+                    } finally {
+                        window.fctSaveGame = _origFctSaveGame;
+                        _syncShowPlayerSelectModal();
+                    }
                 };
             }
         } else {
