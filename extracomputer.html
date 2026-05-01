@@ -2152,7 +2152,21 @@
 <!-- --------------------------------------------- --------------------------------------------- -->
 <!-- SCRIPTS -->
 <!-- --------------------------------------------- --------------------------------------------- -->
-    <!-- Files -->
+    <!-- Socket.IO client (served locally by server.py; CDN fallback if missing) -->
+    <script>
+        (function () {
+            var s = document.createElement("script");
+            s.src = "/ti4/socket.io.min.js";
+            s.onerror = function () {
+                var fb = document.createElement("script");
+                fb.src = "https://cdn.socket.io/4.7.5/socket.io.min.js";
+                document.head.appendChild(fb);
+            };
+            document.head.appendChild(s);
+        }());
+    </script>
+
+    <!-- Game files -->
     <script src="ti4/ti4.js"></script>
     <script src="ti4/lang.js"></script>
     <script src="ti4/main.js"></script>
@@ -2161,5 +2175,8 @@
     <script src="ti4/status.js"></script>
     <script src="ti4/votes.js"></script>
     <script src="ti4/news.js"></script>
+
+    <!-- Multi-player sync layer — must load last -->
+    <script src="ti4/sync.js"></script>
 </body>
 </html>
