@@ -18,7 +18,7 @@ import os
 import socket
 import urllib.request
 
-from flask import Flask, request, send_from_directory
+from flask import Flask, abort, request, send_from_directory
 from flask_socketio import SocketIO, emit
 
 # ---------------------------------------------------------------------------
@@ -48,6 +48,22 @@ client_roles: dict = {}    # sid → {"role": "admin"|"player", "player_idx": in
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+def find_free_port(start: int = 5000, stop: int = 5100) -> int:
+    """Return the first TCP port in [start, stop) that is not in use."""
+    for port in range(start, stop):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            try:
+                s.bind(("", port))
+                return port
+            except OSError:
+                continue
+    raise RuntimeError(
+        f"No free port found between {start} and {stop}. "
+        "Please free up a port or adjust the range in server.py."
+    )
+
+
 def get_local_ip() -> str:
     """Return the machine's LAN IP address."""
     try:
@@ -91,6 +107,9 @@ def index():
 
 @app.route("/<path:path>")
 def static_files(path):
+    full_path = os.path.join(BASE_DIR, path)
+    if not os.path.isfile(full_path):
+        abort(404)
     return send_from_directory(BASE_DIR, path)
 
 
@@ -186,7 +205,7 @@ if __name__ == "__main__":
     ensure_socketio_js()
 
     local_ip = get_local_ip()
-    port = 5000
+    port = find_free_port()
 
     print()
     print("=" * 58)
